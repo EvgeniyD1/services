@@ -28,6 +28,7 @@ public class JwtTokenUtil {
         User userPrincipal = (User) authentication.getPrincipal();
         return Jwts.builder()
                 .setSubject(userPrincipal.getUsername())
+                .setId(userPrincipal.getId().toString())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date((new Date()).getTime() + lifeTime))
                 .signWith(key)
@@ -42,6 +43,16 @@ public class JwtTokenUtil {
                 .parseClaimsJws(token)
                 .getBody();
         return claims.getSubject();
+    }
+
+    /*method returning user Id from token*/
+    public String getIdFromToken(String token) {
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+        return claims.getId();
     }
 
     /*validity check*/

@@ -6,7 +6,7 @@ import com.example.main_service.mapper.UserMapper;
 import com.example.main_service.request.SignRequest;
 import com.example.main_service.request.UserEmailUpdateRequest;
 import com.example.main_service.request.UserRoleUpdateRequest;
-import com.example.main_service.responce.UserPage;
+import com.example.main_service.responce.UserPageRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -37,12 +37,12 @@ public class UserService implements UserDetailsService {
         return user;
     }
 
-    public UserPage getUsersWithPagination(int page, int size) {
+    public UserPageRequest getUsersWithPagination(int page, int size) {
         int offset = page * size;
         List<User> users = userMapper.getUsersWithPagination(offset, size);
         int userCount = userMapper.getTotalUserCount();
         int totalPages = (userCount + size - 1) / size;
-        return new UserPage(users, totalPages, page, size);
+        return new UserPageRequest(users, totalPages, page, size);
     }
 
     public void insertUser(SignRequest request) {
@@ -72,4 +72,14 @@ public class UserService implements UserDetailsService {
         userMapper.deleteUser(username);
     }
 
+    public User findUserByUsernameWithArticles(String username){
+        return userMapper.findUserByUsernameWithArticles(username);
+    }
+
+    public UserPageRequest getUsersWithArticlesAndPagination(int page, int size) {
+        List<User> users = userMapper.getUsersWithArticlesAndPagination(page * size, size);
+        int userCount = userMapper.getTotalUserCount();
+        int totalPages = (userCount + size - 1) / size;
+        return new UserPageRequest(users, totalPages, page, size);
+    }
 }

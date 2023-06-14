@@ -48,7 +48,8 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(authorizeHttpRequests ->
                         authorizeHttpRequests.requestMatchers("/v3/api-docs/**", "/configuration/ui/**",
                                         "/swagger-resources/**", "/configuration/security/**", "/swagger-ui.html",
-                                        "/swagger-ui/**", "/webjars/**", "/registration", "/login", "/users/**").permitAll()
+                                        "/swagger-ui/**", "/webjars/**", "/registration", "/login", "/users/**",
+                                        "/articles/**").permitAll()
                                 .anyRequest().authenticated())
                 .logout(logout -> logout.logoutUrl("/logout").permitAll())
                 .authenticationProvider(authenticationProvider())
