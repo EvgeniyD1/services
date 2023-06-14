@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 @Data
 public class User implements UserDetails, Serializable {
@@ -20,6 +21,8 @@ public class User implements UserDetails, Serializable {
     private String email;
     private Date registrationDate;
     private Role role;
+
+    private List<Article> articles;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

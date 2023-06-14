@@ -11,6 +11,8 @@ public class Article implements Serializable {
     private Long id;
     private Long userId;
     private String title;
-    private String content;
+    private String context;
     private Date creationDate;
+
+    private User user;
 }

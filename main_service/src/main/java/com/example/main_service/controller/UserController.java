@@ -4,16 +4,14 @@ import com.example.main_service.config.JwtTokenUtil;
 import com.example.main_service.domain.User;
 import com.example.main_service.request.UserEmailUpdateRequest;
 import com.example.main_service.request.UserRoleUpdateRequest;
-import com.example.main_service.responce.UserPage;
+import com.example.main_service.responce.UserPageRequest;
 import com.example.main_service.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,8 +43,8 @@ public class UserController {
     @Parameter(name = "size", description = "page length",
             in = ParameterIn.QUERY, schema = @Schema(type = "int", defaultValue = "5"))
     @GetMapping
-    public ResponseEntity<UserPage> getUsersWithPagination(@RequestParam(defaultValue = "0") int page,
-                                                           @RequestParam(defaultValue = "5") int size) {
+    public ResponseEntity<UserPageRequest> getUsersWithPagination(@RequestParam(defaultValue = "0") int page,
+                                                                  @RequestParam(defaultValue = "5") int size) {
         return ResponseEntity.ok(userService.getUsersWithPagination(page, size));
     }
 
@@ -110,5 +108,30 @@ public class UserController {
     public ResponseEntity<String> deleteUser(@PathVariable("username") String username) {
         userService.deleteUser(username);
         return ResponseEntity.ok("User with username \"" + username + "\" was deleted");
+    }
+
+    @Operation(summary = "find user with articles by username",
+            description = "returns user and his articles by username", responses = {
+            @ApiResponse(responseCode = "200", description = "Success!!!"),
+    })
+    @Parameter(name = "username", description = "username to search",
+            in = ParameterIn.PATH, required = true, schema = @Schema(type = "string", defaultValue = "user"))
+    @GetMapping("{username}/withArticles")
+    public ResponseEntity<?> findUserByUsernameWithArticles(@PathVariable("username") String username) {
+        return ResponseEntity.ok(userService.findUserByUsernameWithArticles(username));
+    }
+
+    @Operation(summary = "find users with articles and pagination",
+            description = "returns users page", responses = {
+            @ApiResponse(responseCode = "200", description = "Success!!!"),
+    })
+    @Parameter(name = "page", description = "page number",
+            in = ParameterIn.QUERY, schema = @Schema(type = "int", defaultValue = "0"))
+    @Parameter(name = "size", description = "page length",
+            in = ParameterIn.QUERY, schema = @Schema(type = "int", defaultValue = "5"))
+    @GetMapping("/withArticles")
+    public ResponseEntity<UserPageRequest> getUsersWithArticlesAndPagination(@RequestParam(defaultValue = "0") int page,
+                                                                             @RequestParam(defaultValue = "5") int size) {
+        return ResponseEntity.ok(userService.getUsersWithArticlesAndPagination(page, size));
     }
 }
