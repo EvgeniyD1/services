@@ -1,0 +1,24 @@
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml" />
+
+    <!-- Configuration for JSON output -->
+    <appender name="JSON" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder" />
+    </appender>
+
+    <!-- Configuration for regular output -->
+    <appender name="PLAIN" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr([%thread]){magenta} %clr(%-5level){cyan} %clr(%logger{36}){yellow} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Logger for which JSON will be used -->
+    <logger name="com.example.main_service.aspect.ServiceLogAspect" level="info" additivity="false">
+        <appender-ref ref="JSON" />
+    </logger>
+
+    <root level="info">
+        <appender-ref ref="PLAIN" />
+    </root>
+</configuration>
