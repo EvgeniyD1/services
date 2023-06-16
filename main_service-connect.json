@@ -1,0 +1,18 @@
+{
+  "name":"main_service-connector",
+  "config":{
+    "connector.class":"io.debezium.connector.postgresql.PostgresConnector",
+    "tasks.max": "1",
+    "database.hostname":"host.docker.internal",
+    "database.port":"5433",
+    "database.user":"postgres",
+    "database.password":"root",
+    "database.dbname":"main_service",
+    "database.server.name":"DockerDB",
+    "table.include.list":"public.users,public.article",
+    "database.history.kafka.bootstrap.servers":"kafka:9092",
+    "database.history.kafka.topic":"db_history.main_service",
+    "transforms":"unwrap",
+    "transforms.unwrap.type":"io.debezium.transforms.ExtractNewRecordState"
+  }
+}
