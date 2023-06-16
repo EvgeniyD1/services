@@ -38,7 +38,7 @@ public interface UserMapper {
     void updateUserRole(@Param("username") String username, @Param("user") User user);
 
     @Delete("delete from users where username = #{username}")
-    void deleteUser(@Param("username") String username);
+    int deleteUser(@Param("username") String username);
 
     @Select("select * from users where username=#{username}")
     @Results(value = {

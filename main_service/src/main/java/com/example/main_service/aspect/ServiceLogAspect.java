@@ -21,12 +21,12 @@ public class ServiceLogAspect {
     public Object logAroundMethods(ProceedingJoinPoint joinPoint) throws Throwable {
 
         StopWatch sw = new StopWatch();
-        log.info("Method " + joinPoint.getSignature().getDeclaringTypeName() + " " + joinPoint.getSignature().getName()
+        log.debug("Method " + joinPoint.getSignature().getDeclaringTypeName() + " " + joinPoint.getSignature().getName()
                 + " start");
         sw.start();
         Object proceed = joinPoint.proceed();
         sw.stop();
-        log.info("Method " + joinPoint.getSignature().getDeclaringTypeName() + " " + joinPoint.getSignature().getName()
+        log.debug("Method " + joinPoint.getSignature().getDeclaringTypeName() + " " + joinPoint.getSignature().getName()
                 + " finished. Method execution time: " + sw.getTotalTimeMillis() + " milliseconds.");
         return proceed;
     }

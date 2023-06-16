@@ -14,7 +14,7 @@
     </appender>
 
     <!-- Logger for which JSON will be used -->
-    <logger name="com.example.main_service.aspect.ServiceLogAspect" level="info" additivity="false">
+    <logger name="com.example.main_service.aspect.ServiceLogAspect" level="debug" additivity="false">
         <appender-ref ref="JSON" />
     </logger>
 

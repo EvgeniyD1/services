@@ -3,7 +3,7 @@ package com.example.main_service.controller;
 import com.example.main_service.config.JwtTokenUtil;
 import com.example.main_service.domain.Article;
 import com.example.main_service.request.ArticleRequest;
-import com.example.main_service.responce.ArticlePageRequest;
+import com.example.main_service.response.ArticlePageResponse;
 import com.example.main_service.service.ArticleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -44,7 +44,11 @@ public class ArticleController {
             in = ParameterIn.PATH, required = true, schema = @Schema(type = "string", defaultValue = "1"))
     @GetMapping("{id}")
     public ResponseEntity<Article> findArticleById(@PathVariable("id") Long id) {
-        return ResponseEntity.ok(articleService.findArticleById(id));
+        Article article = articleService.findArticleById(id);
+        if (article != null) {
+            return ResponseEntity.ok(article);
+        }
+        return ResponseEntity.notFound().build();
     }
 
 
@@ -55,7 +59,11 @@ public class ArticleController {
             in = ParameterIn.PATH, required = true, schema = @Schema(type = "string", defaultValue = "text"))
     @GetMapping("/byTitle/{title}")
     public ResponseEntity<List<Article>> findArticleByTitle(@PathVariable("title") String title) {
-        return ResponseEntity.ok(articleService.findArticlesByTitle(title));
+        List<Article> articles = articleService.findArticlesByTitle(title);
+        if (!articles.isEmpty()) {
+            return ResponseEntity.ok(articles);
+        }
+        return ResponseEntity.notFound().build();
     }
 
 
@@ -66,7 +74,11 @@ public class ArticleController {
             in = ParameterIn.PATH, required = true, schema = @Schema(type = "string", defaultValue = "1"))
     @GetMapping("/byUserId/{userId}")
     public ResponseEntity<List<Article>> findArticlesByUserId(@PathVariable("userId") Long userId) {
-        return ResponseEntity.ok(articleService.findArticlesByUserId(userId));
+        List<Article> articles = articleService.findArticlesByUserId(userId);
+        if (!articles.isEmpty()) {
+            return ResponseEntity.ok(articles);
+        }
+        return ResponseEntity.notFound().build();
     }
 
 
@@ -83,10 +95,9 @@ public class ArticleController {
         String token = authorization.substring("Bearer ".length());
         if (jwtTokenUtil.validateToken(token)) {
             articleService.insertArticle(Long.valueOf(jwtTokenUtil.getIdFromToken(token)), request);
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            return ResponseEntity.ok("Article created");
         }
-        return ResponseEntity.ok("Article created");
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
 
@@ -124,13 +135,16 @@ public class ArticleController {
     @PreAuthorize("hasAuthority('ADMIN')")
     @DeleteMapping("{id}")
     public ResponseEntity<String> deleteArticle(@PathVariable("id") Long id) {
-        articleService.deleteArticle(id);
-        return ResponseEntity.ok("Article with id " + id + " was deleted");
+        int deleteArticle = articleService.deleteArticle(id);
+        if (deleteArticle == 1) {
+            return ResponseEntity.ok("Article with id " + id + " was deleted");
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Article not exist");
     }
 
 
     @Operation(summary = "find articles with pagination",
-            description = "returns articls page", responses = {
+            description = "returns articles page", responses = {
             @ApiResponse(responseCode = "200", description = "Success!!!"),
     })
     @Parameter(name = "page", description = "page number",
@@ -138,32 +152,40 @@ public class ArticleController {
     @Parameter(name = "size", description = "page length",
             in = ParameterIn.QUERY, schema = @Schema(type = "int", defaultValue = "5"))
     @GetMapping("/withPagination")
-    public ResponseEntity<ArticlePageRequest> findArticlesWithPagination(@RequestParam(defaultValue = "0") int page,
-                                                                         @RequestParam(defaultValue = "5") int size){
+    public ResponseEntity<ArticlePageResponse> findArticlesWithPagination(@RequestParam(defaultValue = "0") int page,
+                                                                          @RequestParam(defaultValue = "5") int size) {
         return ResponseEntity.ok(articleService.findArticlesWithPagination(page, size));
     }
 
 
     @Operation(summary = "find article with author by article id", description = "returns full article by id",
             responses = {
-            @ApiResponse(responseCode = "200", description = "Success!!!"),
-    })
+                    @ApiResponse(responseCode = "200", description = "Success!!!"),
+            })
     @Parameter(name = "id", description = "article id to search",
             in = ParameterIn.PATH, required = true, schema = @Schema(type = "string", defaultValue = "1"))
     @GetMapping("{id}/withAuthor")
-    public ResponseEntity<Article> findArticleByIdWithAuthor(@PathVariable("id") Long id){
-        return ResponseEntity.ok(articleService.findArticleByIdWithAuthor(id));
+    public ResponseEntity<Article> findArticleByIdWithAuthor(@PathVariable("id") Long id) {
+        Article article = articleService.findArticleByIdWithAuthor(id);
+        if (article != null) {
+            return ResponseEntity.ok(article);
+        }
+        return ResponseEntity.notFound().build();
     }
 
 
     @Operation(summary = "find article by title with author", description = "returns article by title with author like",
             responses = {
-            @ApiResponse(responseCode = "200", description = "Success!!!"),
-    })
+                    @ApiResponse(responseCode = "200", description = "Success!!!"),
+            })
     @Parameter(name = "title", description = "article title to search",
             in = ParameterIn.PATH, required = true, schema = @Schema(type = "string", defaultValue = "text"))
     @GetMapping("/byTitleWithAuthor/{title}")
-    public ResponseEntity<List<Article>> findArticleByTitleWithAuthor(@PathVariable("title") String title){
-        return ResponseEntity.ok(articleService.findArticlesByTitleWithAuthor(title));
+    public ResponseEntity<List<Article>> findArticleByTitleWithAuthor(@PathVariable("title") String title) {
+        List<Article> articles = articleService.findArticlesByTitleWithAuthor(title);
+        if (!articles.isEmpty()) {
+            return ResponseEntity.ok(articles);
+        }
+        return ResponseEntity.notFound().build();
     }
 }

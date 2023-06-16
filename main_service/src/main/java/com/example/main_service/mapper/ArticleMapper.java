@@ -27,15 +27,15 @@ public interface ArticleMapper {
     @Select("select * from article where user_id = #{userId}")
     List<Article> findArticlesByUserId(@Param("userId") Long userId);
 
-    @Insert("insert into article (user_id, title, context, creation_date) " +
-            "values (#{userId}, #{title}, #{context}, #{creationDate})")
+    @Insert("insert into article (user_id, title, context, created_at) " +
+            "values (#{userId}, #{title}, #{context}, #{createdAt})")
     void insertArticle(Article article);
 
     @Update("update article set title = #{article.title}, context = #{article.context} where id = #{id}")
     void updateArticle(@Param("id") Long id, @Param("article") Article article);
 
     @Delete("delete from article where id = #{id}")
-    void deleteArticle(@Param("id") Long id);
+    int deleteArticle(@Param("id") Long id);
 
     @Select("select * from article limit #{limit} offset #{offset}")
     List<Article> findArticlesWithPagination(@Param("offset") int offset, @Param("limit") int limit);

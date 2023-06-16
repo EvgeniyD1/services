@@ -6,9 +6,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 @Data
@@ -19,7 +19,7 @@ public class User implements UserDetails, Serializable {
     @JsonIgnore
     private String password;
     private String email;
-    private Date registrationDate;
+    private Timestamp registrationDate;
     private Role role;
 
     private List<Article> articles;

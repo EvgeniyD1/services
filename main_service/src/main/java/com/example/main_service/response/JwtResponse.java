@@ -1,4 +1,4 @@
-package com.example.main_service.responce;
+package com.example.main_service.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

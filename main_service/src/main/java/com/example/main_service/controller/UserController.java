@@ -4,7 +4,6 @@ import com.example.main_service.config.JwtTokenUtil;
 import com.example.main_service.domain.User;
 import com.example.main_service.request.UserEmailUpdateRequest;
 import com.example.main_service.request.UserRoleUpdateRequest;
-import com.example.main_service.responce.UserPageRequest;
 import com.example.main_service.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -43,8 +42,8 @@ public class UserController {
     @Parameter(name = "size", description = "page length",
             in = ParameterIn.QUERY, schema = @Schema(type = "int", defaultValue = "5"))
     @GetMapping
-    public ResponseEntity<UserPageRequest> getUsersWithPagination(@RequestParam(defaultValue = "0") int page,
-                                                                  @RequestParam(defaultValue = "5") int size) {
+    public ResponseEntity<?> getUsersWithPagination(@RequestParam(defaultValue = "0") int page,
+                                                    @RequestParam(defaultValue = "5") int size) {
         return ResponseEntity.ok(userService.getUsersWithPagination(page, size));
     }
 
@@ -56,7 +55,11 @@ public class UserController {
             in = ParameterIn.PATH, required = true, schema = @Schema(type = "string", defaultValue = "user"))
     @GetMapping("{username}")
     public ResponseEntity<User> findUserByUsername(@PathVariable("username") String username) {
-        return ResponseEntity.ok(userService.findUserByUsername(username));
+        User user = userService.findUserByUsername(username);
+        if (user != null) {
+            return ResponseEntity.ok(user);
+        }
+        return ResponseEntity.notFound().build();
     }
 
 
@@ -106,8 +109,11 @@ public class UserController {
     @PreAuthorize("hasAuthority('ADMIN')")
     @DeleteMapping("{username}")
     public ResponseEntity<String> deleteUser(@PathVariable("username") String username) {
-        userService.deleteUser(username);
-        return ResponseEntity.ok("User with username \"" + username + "\" was deleted");
+        int deleteUser = userService.deleteUser(username);
+        if (deleteUser == 1) {
+            return ResponseEntity.ok("User with username \"" + username + "\" was deleted");
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not exist");
     }
 
     @Operation(summary = "find user with articles by username",
@@ -117,8 +123,12 @@ public class UserController {
     @Parameter(name = "username", description = "username to search",
             in = ParameterIn.PATH, required = true, schema = @Schema(type = "string", defaultValue = "user"))
     @GetMapping("{username}/withArticles")
-    public ResponseEntity<?> findUserByUsernameWithArticles(@PathVariable("username") String username) {
-        return ResponseEntity.ok(userService.findUserByUsernameWithArticles(username));
+    public ResponseEntity<User> findUserByUsernameWithArticles(@PathVariable("username") String username) {
+        User user = userService.findUserByUsernameWithArticles(username);
+        if (user != null) {
+            return ResponseEntity.ok(user);
+        }
+        return ResponseEntity.notFound().build();
     }
 
     @Operation(summary = "find users with articles and pagination",
@@ -130,8 +140,8 @@ public class UserController {
     @Parameter(name = "size", description = "page length",
             in = ParameterIn.QUERY, schema = @Schema(type = "int", defaultValue = "5"))
     @GetMapping("/withArticles")
-    public ResponseEntity<UserPageRequest> getUsersWithArticlesAndPagination(@RequestParam(defaultValue = "0") int page,
-                                                                             @RequestParam(defaultValue = "5") int size) {
+    public ResponseEntity<?> getUsersWithArticlesAndPagination(@RequestParam(defaultValue = "0") int page,
+                                                               @RequestParam(defaultValue = "5") int size) {
         return ResponseEntity.ok(userService.getUsersWithArticlesAndPagination(page, size));
     }
 }

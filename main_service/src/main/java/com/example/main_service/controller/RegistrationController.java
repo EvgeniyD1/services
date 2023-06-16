@@ -2,7 +2,7 @@ package com.example.main_service.controller;
 
 import com.example.main_service.config.JwtTokenUtil;
 import com.example.main_service.request.SignRequest;
-import com.example.main_service.responce.JwtResponse;
+import com.example.main_service.response.JwtResponse;
 import com.example.main_service.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -44,7 +44,7 @@ public class RegistrationController {
     public ResponseEntity<JwtResponse> login(@RequestBody SignRequest request) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        request.getUsername(),
+                        request.getUsername().toLowerCase(),
                         request.getPassword()
                 )
         );

@@ -16,7 +16,7 @@ import java.util.Date;
 public class JwtTokenUtil {
 
     /*token validity time*/
-    @Value("${LIFE_TIME}")
+    @Value("${jwt_token_life_time}")
     private Long lifeTime;
 
     /*generated security key*/
