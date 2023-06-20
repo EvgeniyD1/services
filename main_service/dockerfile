@@ -1,0 +1,9 @@
+FROM openjdk:17-alpine
+
+WORKDIR /main_service
+
+COPY target/main_service-0.0.1-SNAPSHOT.jar /main_service
+
+EXPOSE 8080
+
+CMD ["java", "-jar", "main_service-0.0.1-SNAPSHOT.jar"]

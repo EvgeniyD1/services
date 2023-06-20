@@ -1,0 +1,40 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="1" author="edolgy">
+        <createTable tableName="users">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" primaryKeyName="users_pk" nullable="false"/>
+            </column>
+            <column name="username" type="varchar(30)" >
+                <constraints nullable="false"/>
+            </column>
+            <column name="password" type="varchar(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="varchar(256)"/>
+            <column name="registration_date" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="role" type="varchar(30)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createIndex indexName="users_id_uindex" tableName="users" unique="true">
+            <column name="id"/>
+        </createIndex>
+
+        <createIndex indexName="users_username_uindex" tableName="users" unique="true">
+            <column name="username"/>
+        </createIndex>
+    </changeSet>
+
+<!--    <changeSet id="2" author="edolgiy">-->
+<!--        <modifySql dbms="postgresql">-->
+<!--            <append value="ALTER TABLE users OWNER TO postgres;"/>-->
+<!--        </modifySql>-->
+<!--    </changeSet>-->
+
+</databaseChangeLog>
