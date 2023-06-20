@@ -7,10 +7,10 @@ import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.util.Date;
 
 @Data
-@Document(indexName = "articles")
+@Document(indexName = "dockerdb.public.article")
 public class Article implements Serializable {
 
     @Id
@@ -26,7 +26,7 @@ public class Article implements Serializable {
     private String context;
 
     @Field(type = FieldType.Date, name = "created_at")
-    private Timestamp createdAt;
+    private Date createdAt;
 
 //    @Field(type = FieldType.Object)
 //    private User user;

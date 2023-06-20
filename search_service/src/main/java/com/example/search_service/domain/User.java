@@ -8,11 +8,10 @@ import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
-import java.util.List;
+import java.util.Date;
 
 @Data
-@Document(indexName = "users")
+@Document(indexName = "dockerdb.public.users")
 public class User implements Serializable {
 
     @Id
@@ -29,11 +28,11 @@ public class User implements Serializable {
     private String email;
 
     @Field(type = FieldType.Date, name = "registration_date")
-    private Timestamp registrationDate;
+    private Date registrationDate;
 
     @Field(type = FieldType.Keyword)
     private String role;
 
-    @Field(type = FieldType.Nested)
-    private List<Article> articles;
+//    @Field(type = FieldType.Nested)
+//    private List<Article> articles;
 }

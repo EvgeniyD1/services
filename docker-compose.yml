@@ -5,6 +5,7 @@ services:
     build:
       context: main_service
       dockerfile: Dockerfile
+    container_name: main_service
     ports:
       - "8080:8080"
     environment:
@@ -13,17 +14,9 @@ services:
       SPRING_DATASOURCE_PASSWORD: root
     depends_on:
       - postgres
-      - debezium
-
-  search_service:
-    build:
-      context: search_service
-      dockerfile: Dockerfile
-    ports:
-      - "8081:8081"
-
   postgres:
     image: quay.io/debezium/postgres:11
+    container_name: postgres
     ports:
       - "5433:5432"
     environment:
@@ -31,24 +24,72 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=root
 
+
+  search_service:
+    build:
+      context: search_service
+      dockerfile: Dockerfile
+    container_name: search_service
+    ports:
+      - "8081:8081"
+    environment:
+      - ELASTIC_DATASOURCE_URL=elasticsearch:9200
+    depends_on:
+      - elasticsearch
+      - kibana
+  elasticsearch:
+    image: elasticsearch:7.17.3
+    container_name: elasticsearch
+    ports:
+      - "9200:9200"
+    environment:
+      - xpack.security.enabled=false
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms1g -Xmx2g
+  kibana:
+    image: kibana:7.17.3
+    container_name: kibana
+    ports:
+      - "5601:5601"
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    depends_on:
+      - elasticsearch
+
+
+
   zookeeper:
     image: quay.io/debezium/zookeeper:1.9
+    container_name: zookeeper
     ports:
       - "2181:2181"
       - "2888:2888"
       - "3888:3888"
-
   kafka:
     image: quay.io/debezium/kafka:1.9
+    container_name: kafka
     ports:
       - "9092:9092"
     links:
       - zookeeper
     environment:
       - ZOOKEEPER_CONNECT=zookeeper:2181
+  kafdrop:
+    image: obsidiandynamics/kafdrop
+    container_name: kafdrop
+    ports:
+      - "9000:9000"
+    environment:
+      - KAFKA_BROKERCONNECT=kafka:9092
+    links:
+      - kafka
 
-  debezium:
-    image: quay.io/debezium/connect:1.9
+
+  connect:
+#    image: quay.io/debezium/connect:1.9
+    container_name: connect
+    build:
+      context: connect
     ports:
       - "8083:8083"
     environment:
@@ -61,15 +102,5 @@ services:
       - OFFSET_STORAGE_REPLICATION_FACTOR=1
       - STATUS_STORAGE_REPLICATION_FACTOR=1
     links:
-      - zookeeper
       - kafka
       - postgres
-
-  kafdrop:
-    image: obsidiandynamics/kafdrop
-    ports:
-      - "9000:9000"
-    environment:
-      - KAFKA_BROKERCONNECT=kafka:9092
-    links:
-      - kafka

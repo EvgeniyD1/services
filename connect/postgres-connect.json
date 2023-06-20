@@ -10,9 +10,9 @@
     "database.dbname":"main_service",
     "database.server.name":"DockerDB",
     "table.include.list":"public.users,public.article",
-    "database.history.kafka.bootstrap.servers":"kafka:9092",
-    "database.history.kafka.topic":"db_history.main_service",
     "transforms":"unwrap",
-    "transforms.unwrap.type":"io.debezium.transforms.ExtractNewRecordState"
+    "transforms.unwrap.type":"io.debezium.transforms.ExtractNewRecordState",
+    "transforms.unwrap.drop.tombstones": "false",
+    "delete.enabled": "true"
   }
 }
