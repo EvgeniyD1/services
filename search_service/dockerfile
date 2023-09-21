@@ -1,0 +1,9 @@
+FROM openjdk:17-alpine
+
+WORKDIR /search_service
+
+COPY target/search_service-0.0.1-SNAPSHOT.jar /search_service
+
+EXPOSE 8080
+
+CMD ["java", "-jar", "search_service-0.0.1-SNAPSHOT.jar"]
